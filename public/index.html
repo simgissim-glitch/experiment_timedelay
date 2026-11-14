@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>연구 참여 및 장비 선정 과제</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/telemetry.js" defer></script>
+    <script src="/js/chat.js" defer></script>
+    <script src="/js/search.js" defer></script>
+    <script src="/js/app.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>연구 참여 및 장비 선정 과제</h1>
+        <p>안내에 따라 설문과 장비 선정 과제를 순서대로 진행해 주세요.</p>
+        <p class="note">개발 테스트용 초안입니다. 동의, 사전 설문과 과제 안내 진행은 서버에 저장됩니다. 이후 실험 기능은 준비 중입니다.</p>
+      </header>
+      <p id="recording-status" role="status" aria-live="polite" hidden></p>
+      <button id="recording-retry" type="button" hidden>기록 전송 다시 시도</button>
+
+      <nav aria-label="실험 진행 순서">
+        <ol>
+          <li><a href="#consent">연구 참여 안내 및 동의</a></li>
+          <li><a href="#pre-survey">사전 설문</a></li>
+          <li><a href="#task-guide">업무 과제 안내</a></li>
+          <li><a href="#workspace">AI 대화 및 웹 검색</a></li>
+          <li><a href="#decision">최종 선택 및 근거</a></li>
+          <li><a href="#post-survey">사후 설문</a></li>
+          <li><a href="#debriefing">연구 종료 및 디브리핑</a></li>
+        </ol>
+      </nav>
+
+      <!-- TODO: 연구자 확정 후 승인된 동의서와 보관·철회 정책의 문구·버전을 반영한다. -->
+      <section id="consent" aria-labelledby="consent-title">
+        <h2 id="consent-title">1. 연구 참여 안내 및 동의</h2>
+        <p>[임시 안내] 본 연구에서는 정보 도구를 활용하여 장비 선정 과제를 수행합니다.</p>
+        <dl>
+          <dt>참여 절차 및 예상 소요 시간</dt>
+          <dd>TODO: 참여 절차와 소요 시간을 확정하여 안내합니다.</dd>
+          <dt>수집 정보 및 보관·폐기</dt>
+          <dd>TODO: 수집 항목, 이용 목적, 보관 기간과 폐기 방법을 안내합니다.</dd>
+          <dt>자발적 참여 및 중단</dt>
+          <dd>참여 중 언제든 참여 중단 버튼으로 중단할 수 있습니다. TODO: 참여 거부·중단에 따른 보관·철회·삭제 정책은 연구자가 확정합니다.</dd>
+          <dt>연구 문의</dt>
+          <dd>TODO: 연구 담당자 및 문의 연락처를 입력합니다.</dd>
+        </dl>
+        <fieldset>
+          <legend>연구 참여 의사</legend>
+          <label><input type="radio" name="participation-consent" value="agree"> 안내 내용을 읽었으며 연구 참여에 동의합니다.</label>
+          <label><input type="radio" name="participation-consent" value="decline"> 연구 참여에 동의하지 않습니다.</label>
+        </fieldset>
+        <fieldset>
+          <legend>참여 자격 확인</legend>
+          <label><input id="eligibility-confirmation" name="eligibility-confirmation" type="checkbox"> 개발 테스트용 참여 자격 확인을 완료했습니다.</label>
+          <p>TODO: 실제 연구의 적격성 기준을 확정하여 이 항목을 교체합니다. 현재는 개발 테스트용 확인입니다.</p>
+        </fieldset>
+        <!-- TODO: 동의한 경우에만 다음 단계로 진행하고, 비동의 시 종료한다. -->
+        <button type="button" disabled>동의 후 사전 설문 시작</button>
+      </section>
+
+      <section id="pre-survey" aria-labelledby="pre-survey-title">
+        <h2 id="pre-survey-title">2. 생성형 AI 이용 경험 및 과제 사전지식</h2>
+        <p>임시 초안: 아래 문항과 응답 척도는 연구계획서 확정 전입니다. TODO: 연구자 확정 후 교체합니다.</p>
+        <p>생성형 AI 이용 경험이 없는 경우 참여 자격 기준에 따라 실험이 종료됩니다.</p>
+        <fieldset>
+          <legend>생성형 AI 이용 경험 — 임시 문항</legend>
+          <label for="ai-experience">생성형 AI를 사용해 본 경험을 선택해 주세요.</label>
+          <select id="ai-experience" name="ai-experience">
+            <option value="">선택해 주세요</option>
+            <option value="none">사용 경험 없음 (임시)</option>
+            <option value="some">사용 경험 있음 (임시)</option>
+          </select>
+        </fieldset>
+        <fieldset>
+          <legend>생성형 AI 이용 빈도 — 임시 문항·척도</legend>
+          <label for="ai-frequency">평소 생성형 AI를 얼마나 자주 이용하나요?</label>
+          <select id="ai-frequency" name="ai-frequency">
+            <option value="">선택해 주세요</option>
+            <option value="never">사용하지 않음 (임시)</option>
+            <option value="rarely">월 1회 미만 (임시)</option>
+            <option value="monthly">월 단위로 이용 (임시)</option>
+            <option value="weekly">주 단위로 이용 (임시)</option>
+            <option value="daily">매일 이용 (임시)</option>
+          </select>
+        </fieldset>
+        <fieldset>
+          <legend>과제 관련 사전지식 — 임시 문항</legend>
+          <label for="prior-knowledge">해당 전문 장비에 대해 얼마나 알고 있나요?</label>
+          <select id="prior-knowledge" name="prior-knowledge">
+            <option value="">선택해 주세요</option>
+            <option value="low">잘 모름 (임시)</option>
+            <option value="medium">어느 정도 알고 있음 (임시)</option>
+            <option value="high">잘 알고 있음 (임시)</option>
+          </select>
+        </fieldset>
+        <div>
+          <button id="save-pre-draft" type="button" disabled>사전 설문 임시 저장</button>
+          <p id="pre-save-status" role="status" aria-live="polite">입력 후 임시 저장하거나 다음 단계로 진행해 주세요.</p>
+        </div>
+        <button type="button" disabled>사전 설문 완료 및 과제 안내로 이동</button>
+      </section>
+
+      <section id="task-guide" aria-labelledby="task-guide-title">
+        <h2 id="task-guide-title">3. 전문 장비 선정 업무 과제 안내</h2>
+        <p>[임시 시나리오] 귀하는 업무 담당자로서 사용 목적과 구매 조건에 적합한 전문 장비를 선정해야 합니다.</p>
+        <dl>
+          <dt>사용 목적</dt><dd>TODO: 장비 사용 환경과 업무 목적</dd>
+          <dt>선정 조건</dt><dd>TODO: 예산, 필수 성능, 호환성 및 기타 제약</dd>
+          <dt>제출 내용</dt><dd>최종 제품 한 개와 선정 근거를 제출합니다. TODO: 세부 제출 기준</dd>
+        </dl>
+        <h3>선정 후보 — 임시 제품</h3>
+        <ul>
+          <li>제품 A: TODO: 실제 제품명과 사양</li>
+          <li>제품 B: TODO: 실제 제품명과 사양</li>
+          <li>제품 C: TODO: 실제 제품명과 사양</li>
+        </ul>
+        <p>과제 수행 화면에서 AI 대화와 웹 검색 영역을 이용할 수 있습니다.</p>
+        <button type="button" disabled>안내 확인 및 과제 시작</button>
+      </section>
+
+      <section id="workspace" aria-labelledby="workspace-title">
+        <h2 id="workspace-title">4. 장비 선정 과제 수행</h2>
+        <aside aria-labelledby="task-summary-title">
+          <h3 id="task-summary-title">과제 요약</h3>
+          <p>목적과 조건에 적합한 제품을 비교하고 선정 근거를 준비해 주세요.</p>
+          <p>TODO: 확정된 과제 조건 및 후보 제품 정보</p>
+          <a href="#task-guide">업무 과제 안내 다시 보기</a>
+        </aside>
+        <!-- 두 도구는 동일한 작업 화면 안에 둔다. TODO: 추후 배치 디자인을 적용한다. -->
+        <div id="research-tools">
+          <section id="ai-panel" aria-labelledby="ai-panel-title">
+            <h3 id="ai-panel-title">AI 대화</h3>
+            <div id="chat-messages" role="log" aria-label="AI 대화 기록" aria-live="polite">
+              <p>메시지를 보내면 대화를 시작할 수 있습니다.</p>
+            </div>
+            <label for="chat-input">AI에게 질문할 내용</label>
+            <textarea id="chat-input" name="chat-input" rows="4" placeholder="장비 선정에 필요한 질문을 입력하세요."></textarea>
+            <button id="chat-send" type="button" disabled>메시지 보내기</button>
+            <button id="chat-cancel" type="button" hidden>요청 중단</button>
+            <button id="chat-retry" type="button" hidden>다시 시도</button>
+            <div id="chat-loading" class="ai-loading" role="status" hidden>응답을 기다리고 있습니다.</div>
+            <p id="chat-status" role="status"></p>
+          </section>
+          <section id="search-panel" aria-labelledby="search-panel-title">
+            <h3 id="search-panel-title">웹 검색</h3>
+            <label for="search-query">검색어</label>
+            <input id="search-query" name="search-query" type="search" maxlength="600" placeholder="제품명이나 확인할 정보를 입력하세요.">
+            <button id="search-submit" type="button" disabled>검색</button>
+            <p id="search-status" role="status" aria-live="polite"></p>
+            <div id="search-results" role="region" aria-labelledby="search-results-title">
+              <h4 id="search-results-title">검색 결과</h4>
+              <div id="search-result-list"><p>검색어를 입력하면 검색 결과가 여기에 표시됩니다.</p></div>
+            </div>
+          </section>
+        </div>
+        <button type="button" disabled>과제 수행 완료 및 최종 선택으로 이동</button>
+      </section>
+
+      <section id="decision" aria-labelledby="decision-title">
+        <h2 id="decision-title">5. 최종 제품 선택 및 선정 근거</h2>
+        <p>TODO: 연구자 승인 후 제품과 제출 안내를 확정합니다. 현재는 개발 테스트용 가상 제품만 사용합니다.</p>
+        <label for="selected-product">최종 선택 제품</label>
+        <input id="selected-product" name="selected-product" type="text" maxlength="100">
+        <label for="key-specifications">선택 근거가 되는 주요 사양</label>
+        <textarea id="key-specifications" name="key-specifications" rows="4" maxlength="10000"></textarea>
+        <label for="selection-reason">선정 근거</label>
+        <textarea id="selection-reason" name="selection-reason" rows="6" maxlength="10000" placeholder="이 제품을 선정한 이유를 작성해 주세요."></textarea>
+        <label for="reference-sources">참고한 정보 및 출처</label>
+        <textarea id="reference-sources" name="reference-sources" rows="3" maxlength="10000" placeholder="참고한 정보나 출처를 적어 주세요. (선택)"></textarea>
+        <p>제출 후에는 최종 답변을 수정할 수 없습니다.</p>
+        <button type="button" disabled>최종 선택 및 근거 제출</button>
+      </section>
+
+      <section id="post-survey" aria-labelledby="post-survey-title">
+        <h2 id="post-survey-title">6. 사후 설문</h2>
+        <p>임시 초안 — 문항과 척도는 연구계획서 확정 및 연구자 승인 전입니다. 실제 연구에 사용할 수 없습니다.</p>
+        <label for="perceived-delay">AI의 응답 대기시간을 어떻게 느꼈습니까? (임시 문항)</label>
+        <select id="perceived-delay" name="perceived-delay">
+          <option value="">선택해 주세요</option><option value="1">매우 짧음</option><option value="2">짧음</option><option value="3">보통</option><option value="4">김</option><option value="5">매우 김</option>
+        </select>
+        <label for="interaction-naturalness">AI와의 상호작용이 얼마나 자연스러웠습니까? (임시 문항)</label>
+        <select id="interaction-naturalness" name="interaction-naturalness">
+          <option value="">선택해 주세요</option><option value="1">매우 부자연스러움</option><option value="2">부자연스러움</option><option value="3">보통</option><option value="4">자연스러움</option><option value="5">매우 자연스러움</option>
+        </select>
+        <label for="suspected-delay">응답에 인위적인 지연이 있다고 의심했습니까? (임시 문항)</label>
+        <select id="suspected-delay" name="suspected-delay">
+          <option value="">선택해 주세요</option><option value="yes">예</option><option value="no">아니요</option><option value="unsure">잘 모르겠음</option>
+        </select>
+        <label for="suspected-prewritten">답변이 사전에 작성되었다고 의심했습니까? (임시 문항)</label>
+        <select id="suspected-prewritten" name="suspected-prewritten">
+          <option value="">선택해 주세요</option><option value="yes">예</option><option value="no">아니요</option><option value="unsure">잘 모르겠음</option>
+        </select>
+        <button type="button" disabled>사후 설문 제출 및 종료 안내로 이동</button>
+      </section>
+
+      <section id="debriefing" aria-labelledby="debriefing-title">
+        <h2 id="debriefing-title">7. 연구 종료 및 디브리핑</h2>
+        <p>연구 참여 절차의 마지막 단계입니다. 참여해 주셔서 감사합니다.</p>
+        <h3>연구에 대한 추가 안내</h3>
+        <p id="debriefing-draft"></p>
+        <p id="debriefing-explanation"></p>
+        <h3>잘못된 정보에 대한 설명</h3>
+        <p id="debriefing-correction"></p>
+        <h3>문의 및 참여 후 안내</h3>
+        <p id="debriefing-policy"></p>
+        <p id="completion-status" role="status"></p>
+        <button type="button" disabled>안내 확인 및 연구 종료</button>
+      </section>
+    </main>
+  </body>
+</html>

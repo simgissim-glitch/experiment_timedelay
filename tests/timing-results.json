@@ -1,0 +1,54 @@
+{
+  "generated_at": "2026-11-14T20:01:52.160Z",
+  "environment": "headless Chrome + local Express + isolated PGlite + deterministic provider; real wall time",
+  "results": [
+    {
+      "condition": "A",
+      "turn": 1,
+      "target_ms": 2000,
+      "actual_ms": 2044,
+      "difference_ms": 44
+    },
+    {
+      "condition": "A",
+      "turn": 2,
+      "target_ms": 2000,
+      "actual_ms": 2026,
+      "difference_ms": 26
+    },
+    {
+      "condition": "B",
+      "turn": 1,
+      "target_ms": 9000,
+      "actual_ms": 9025,
+      "difference_ms": 25
+    },
+    {
+      "condition": "B",
+      "turn": 2,
+      "target_ms": 9000,
+      "actual_ms": 9019,
+      "difference_ms": 19
+    },
+    {
+      "condition": "C",
+      "turn": 1,
+      "target_ms": 20000,
+      "actual_ms": 20038,
+      "difference_ms": 38
+    },
+    {
+      "condition": "C",
+      "turn": 2,
+      "target_ms": 20000,
+      "actual_ms": 20022,
+      "difference_ms": 22
+    },
+    {
+      "case": "A slow provider",
+      "target_ms": 2000,
+      "actual_ms": 2450,
+      "difference_ms": 450
+    }
+  ]
+}

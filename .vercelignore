@@ -1,0 +1,14 @@
+.env
+.env.*
+node_modules/
+.git/
+.github/
+tests/
+reports/
+secrets/
+*.key
+*.pem
+*.p12
+*.pfx
+*credentials*.json
+*service-account*.json

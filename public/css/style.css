@@ -1,0 +1,160 @@
+/* 모든 실험 조건이 공유하는 스타일. 조건별 테마와 안내를 추가하지 않는다. */
+:root {
+  color-scheme: light;
+  font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 16px;
+  color: #243247;
+  background: #f3f5f8;
+  line-height: 1.75;
+  --ink: #17283f;
+  --muted: #59677b;
+  --accent: #285c78;
+  --line: #d9e1e9;
+  --soft: #f6f8fa;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; padding: 48px 28px 80px; }
+main { max-width: 1200px; min-width: 0; margin: 0 auto; }
+main > header { max-width: 850px; padding-bottom: 28px; }
+h1, h2, h3, h4 { color: var(--ink); line-height: 1.45; word-break: keep-all; overflow-wrap: anywhere; }
+h1 { margin: 0 0 16px; font-size: clamp(1.65rem, 3.4vw, 2.35rem); letter-spacing: -0.04em; }
+h2 { margin: 0 0 24px; font-size: clamp(1.2rem, 2.4vw, 1.5rem); letter-spacing: -0.025em; }
+h3 { margin: 28px 0 12px; font-size: 1.06rem; }
+h4 { margin: 0 0 16px; font-size: 0.94rem; }
+p { margin: 0 0 16px; overflow-wrap: anywhere; }
+a { color: var(--accent); text-underline-offset: 4px; overflow-wrap: anywhere; }
+a:hover { text-decoration-thickness: 2px; }
+.note { margin-bottom: 0; color: var(--muted); font-size: 0.88rem; }
+
+/* 실제 진행 기능은 유지한다. 현재 앵커는 선택 표시이며 완료 표시가 아니다.
+   추후 단계 전환 구현 시 aria-current="step"을 설정할 수 있다. */
+nav { margin-bottom: 32px; padding: 22px 16px; background: #fff; border: 1px solid var(--line); border-radius: 14px; }
+nav ol { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; counter-reset: step; }
+nav li { position: relative; min-width: 0; counter-increment: step; }
+nav li:not(:last-child)::after { position: absolute; top: 17px; left: calc(50% + 23px); width: calc(100% - 46px); height: 2px; background: var(--line); content: ""; }
+nav a { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 0 6px; color: var(--muted); font-size: 0.78rem; font-weight: 600; line-height: 1.55; text-align: center; text-decoration: none; }
+nav a::before { display: grid; place-items: center; width: 36px; height: 36px; flex-shrink: 0; border: 1px solid var(--line); border-radius: 50%; background: var(--soft); color: var(--muted); content: counter(step); font-size: 0.85rem; }
+nav a:hover::before, nav a[aria-current="step"]::before { background: var(--accent); color: #fff; border-color: var(--accent); }
+body:has(#consent:target) nav a[href="#consent"]::before,
+body:has(#pre-survey:target) nav a[href="#pre-survey"]::before,
+body:has(#task-guide:target) nav a[href="#task-guide"]::before,
+body:has(#workspace:target) nav a[href="#workspace"]::before,
+body:has(#decision:target) nav a[href="#decision"]::before,
+body:has(#post-survey:target) nav a[href="#post-survey"]::before,
+body:has(#debriefing:target) nav a[href="#debriefing"]::before { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+main > section { margin-top: 28px; padding: clamp(24px, 4vw, 44px); border: 1px solid var(--line); border-radius: 16px; background: #fff; box-shadow: 0 4px 20px #17283f04; scroll-margin-top: 24px; }
+main > section:target { outline: 2px solid #7c9eaf; outline-offset: 3px; }
+dl { margin: 24px 0; padding: 24px; background: var(--soft); border-radius: 10px; }
+dt { margin-top: 20px; color: var(--ink); font-weight: 700; }
+dt:first-child { margin-top: 0; }
+dd { margin: 6px 0 0; color: var(--muted); overflow-wrap: anywhere; }
+fieldset { min-width: 0; margin: 24px 0; padding: 20px 24px 24px; border: 1px solid var(--line); border-radius: 10px; }
+legend { max-width: 100%; padding: 0 8px; color: var(--ink); font-weight: 700; overflow-wrap: anywhere; }
+label { display: block; margin: 16px 0 8px; font-size: 0.94rem; font-weight: 600; }
+fieldset > label:first-of-type { margin-top: 4px; }
+label:has(input[type="radio"]) { display: flex; align-items: flex-start; gap: 12px; min-height: 48px; padding: 13px 16px; border: 1px solid var(--line); border-radius: 8px; background: #fff; font-weight: 400; cursor: pointer; }
+label:has(input[type="radio"]:checked) { background: #eef4f7; border-color: var(--accent); }
+input[type="radio"] { flex: 0 0 auto; width: 18px; height: 18px; margin: 4px 0 0; accent-color: var(--accent); }
+textarea, select, input[type="search"] { display: block; width: 100%; min-width: 0; min-height: 48px; padding: 12px 14px; border: 1px solid #b9c5d2; border-radius: 8px; background: #fff; color: var(--ink); font: inherit; line-height: 1.6; }
+select { padding-right: 32px; }
+textarea { resize: vertical; }
+textarea::placeholder, input::placeholder { color: #657287; opacity: 1; }
+button { min-height: 46px; max-width: 100%; padding: 11px 20px; border: 1px solid var(--accent); border-radius: 8px; background: var(--accent); color: #fff; font: inherit; font-size: 0.9rem; font-weight: 600; line-height: 1.6; cursor: pointer; overflow-wrap: anywhere; }
+button:hover:not(:disabled) { background: #1d475e; }
+button:disabled { border-color: #d8dfe7; background: #e9edf2; color: #637083; cursor: not-allowed; }
+main > section > button { display: block; margin-top: 28px; margin-left: auto; }
+:where(a, button, input, select, textarea):focus-visible { outline: 3px solid #32769b; outline-offset: 3px; }
+#task-guide > ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; list-style: none; padding: 0; margin: 16px 0 24px; }
+#task-guide > ul li { min-width: 0; padding: 20px; border: 1px solid var(--line); border-radius: 10px; background: var(--soft); overflow-wrap: anywhere; }
+
+/* 같은 작업 화면 내에서 대화와 검색 결과의 표현을 구분한다. */
+#workspace > aside { margin-bottom: 24px; padding: 20px 24px; border-left: 3px solid #8299aa; border-radius: 0 8px 8px 0; background: var(--soft); font-size: 0.9rem; }
+#workspace > aside h3 { margin-top: 0; }
+#workspace > aside p { margin-bottom: 8px; }
+#research-tools { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 20px; align-items: stretch; }
+#research-tools > section { min-width: 0; margin: 0; padding: 24px; border: 1px solid var(--line); border-radius: 12px; }
+#research-tools h3 { margin: -24px -24px 20px; padding: 18px 24px; border-bottom: 1px solid var(--line); }
+#ai-panel { display: flex; flex-direction: column; background: #fff; }
+#chat-messages { display: flex; flex-direction: column; gap: 20px; flex: 1; min-height: 300px; max-height: 560px; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; padding: 8px 4px 24px; }
+#chat-messages > p:only-child { align-self: center; max-width: 34ch; margin: auto; padding: 40px 16px; color: var(--muted); font-size: 0.9rem; text-align: center; }
+/* 향후 메시지에 연결할 공통 클래스. 예시 대화와 기능은 추가하지 않는다. */
+.chat-message { max-width: 100%; margin: 0; overflow-wrap: anywhere; white-space: pre-wrap; }
+.chat-message--user { align-self: flex-end; max-width: 88%; padding: 12px 18px; border-radius: 18px 18px 4px 18px; background: #edf1f5; }
+.chat-message--assistant { align-self: stretch; padding: 12px 4px; background: transparent; }
+.chat-message__author { display: block; margin-bottom: 6px; font-size: 0.8rem; font-weight: 700; color: var(--muted); }
+#ai-panel > label { margin-top: 16px; font-size: 0.82rem; color: var(--muted); }
+#chat-input { min-height: 100px; border-radius: 14px; background: #fafbfc; }
+#ai-panel > button, #search-panel > button { align-self: flex-end; margin-top: 12px; }
+#search-panel { display: flex; flex-direction: column; background: #f8fafc; }
+#search-panel > label { margin-top: 0; }
+#search-results { flex: 1; min-height: 300px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); }
+#search-results > p { padding: 24px 16px; border: 1px dashed #bdcad7; border-radius: 8px; background: #fff; color: var(--muted); font-size: 0.9rem; }
+.search-result { margin-bottom: 12px; padding: 18px; border: 1px solid var(--line); border-radius: 8px; background: #fff; overflow-wrap: anywhere; }
+.search-result h4, .search-result p { margin-bottom: 8px; }
+.search-result__source { color: var(--muted); font-size: 0.8rem; }
+#decision > fieldset { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+#decision > fieldset label { margin: 0; }
+#selection-reason { min-height: 190px; }
+#reference-sources { min-height: 120px; }
+#debriefing { border-top: 3px solid var(--accent); }
+
+/* 추후 대기 중에만 .ai-loading의 hidden을 해제한다.
+   role="status" 및 접근 가능한 텍스트는 기능 구현 시 연결한다.
+   시간·조건·진행률을 표시하지 않는 공통 로딩 스타일이다. */
+.ai-loading { display: flex; align-items: center; gap: 10px; min-height: 32px; padding: 8px 4px; color: var(--muted); font-size: 0.88rem; }
+.ai-loading::before { content: ""; width: 16px; height: 16px; flex: 0 0 auto; border: 2px solid #d7dee5; border-top-color: #62758a; border-radius: 50%; animation: loading-spin 1s linear infinite; }
+@keyframes loading-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .ai-loading::before { animation: none; } }
+
+@media (max-width: 900px) {
+  body { padding: 32px 20px 56px; }
+  nav ol { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px 8px; }
+  nav li::after { display: none; }
+  #research-tools { grid-template-columns: minmax(0, 1fr); }
+  #chat-messages { min-height: 260px; max-height: 480px; }
+  #search-results { min-height: 180px; }
+}
+@media (max-width: 560px) {
+  body { padding: 24px 12px 40px; }
+  main > header { padding: 0 8px 24px; }
+  nav { padding: 18px 10px; margin-bottom: 24px; }
+  nav ol { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 8px; }
+  nav a { flex-direction: row; text-align: left; font-size: 0.78rem; }
+  nav a::before { width: 30px; height: 30px; }
+  main > section { padding: 24px 18px; margin-top: 20px; border-radius: 12px; }
+  fieldset { padding: 16px 12px; }
+  dl { padding: 18px; }
+  #task-guide > ul, #decision > fieldset { grid-template-columns: minmax(0, 1fr); }
+  #research-tools > section { padding: 18px; }
+  #research-tools h3 { margin: -18px -18px 18px; padding: 16px 18px; }
+  #workspace > aside { padding: 16px; }
+  main > section > button { width: 100%; }
+  #chat-messages { max-height: 420px; }
+}
+@media (forced-colors: active) {
+  label:has(input[type="radio"]:checked) { outline: 2px solid Highlight; }
+  nav a[aria-current="step"]::before { outline: 2px solid Highlight; }
+}
+
+/* 단계 전환용 요소만 기존 디자인에 맞춰 추가한다. */
+#experiment-progress-label { margin: 24px 0 8px; color: var(--muted); font-size: 0.88rem; }
+nav progress { display: block; width: 100%; height: 8px; border: 0; border-radius: 8px; background: var(--soft); accent-color: var(--accent); overflow: hidden; }
+nav progress::-webkit-progress-bar { background: var(--soft); }
+nav progress::-webkit-progress-value { background: var(--accent); border-radius: 8px; }
+nav progress::-moz-progress-bar { background: var(--accent); border-radius: 8px; }
+nav a[aria-disabled="true"] { color: var(--muted); text-decoration-style: dotted; }
+nav + [role="alert"] { padding: 16px 20px; border: 1px solid #9b6770; border-radius: 8px; background: #fff8f8; color: #71313d; }
+[aria-invalid="true"] { outline: 2px solid #9b6770; outline-offset: 2px; }
+main > section > button:has(+ button) { margin-right: auto; margin-left: 0; background: #fff; color: var(--accent); }
+/* 일반 대화 표시: 모든 참가자에게 공통 적용한다. */
+#chat-messages { max-height: 32rem; overflow-y: auto; }
+#chat-messages .chat-message p { white-space: pre-wrap; overflow-wrap: anywhere; }
+#chat-status { min-height: 1.5em; }
+#search-status { min-height:1.5em; color:var(--muted); }
+.search-result-list { margin:0; padding-left:1.6rem; }
+.search-result-list li { padding:1rem 0; border-bottom:1px solid var(--line); }
+.search-result-list a { font-weight:600; overflow-wrap:anywhere; }
+.search-result-list p { margin:.4rem 0; overflow-wrap:anywhere; }
+.search-result-url { color:var(--muted); font-size:.85rem; }

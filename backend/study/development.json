@@ -1,0 +1,9 @@
+{
+  "environment": "test",
+  "approved": false,
+  "surveyVersion": "post-draft-v1",
+  "debriefingVersion": "debrief-fictional-draft-v1",
+  "explanation": "개발 테스트 전용 임시 디브리핑입니다. 이 연구는 AI 응답 속도와 정보 이용 행동의 관계를 살펴봅니다. 응답 대기시간은 참가자마다 다르게 설정되었고 최초 답변은 사전에 작성되었습니다. 최초 답변에는 의도적으로 잘못된 정보가 포함되었습니다.",
+  "correction": "테스트용 가상 제품 루멘 T1의 배터리 1개 사용시간을 4시간으로 가정하면, 배터리 2개를 순차 사용한 총시간은 8시간입니다. 최초 답변의 12시간은 잘못된 설명입니다. 이 정보는 실제 제품 사양이 아닙니다.",
+  "contactPolicy": "TODO: 연구 담당자 연락처, 개인정보 보관 기간, 철회·삭제 요청 방법을 연구자가 확정해야 합니다."
+}

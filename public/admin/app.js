@@ -1,0 +1,42 @@
+'use strict';
+(()=>{
+ const $=id=>document.getElementById(id),steps={'consent':'동의','pre-survey':'사전 설문','task-guide':'과제 안내','workspace':'AI·검색','decision':'최종 결정','post-survey':'사후 설문','debriefing':'종료·디브리핑'};
+ let authenticated=false,busy=false,offset=0,total=0,current=null,expiryTimer,sessionGeneration=0;
+ const value=v=>v===null||v===undefined?'—':typeof v==='object'?JSON.stringify(v):String(v);
+ const mean=v=>v===null?'관측 없음':(v/1000).toFixed(3)+'초';
+ const node=(tag,text,parent)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=value(text);if(parent)parent.append(n);return n;};
+ function locked(){document.querySelectorAll('button,input,textarea,select').forEach(n=>n.disabled=busy);$('previous').disabled=busy||offset===0;$('next').disabled=busy||offset+50>=total;$('save-coding').disabled=busy||!current?.participant?.selected_product;}
+ function clearSession(){sessionGeneration++;clearTimeout(expiryTimer);authenticated=false;current=null;total=0;offset=0;$('dashboard').hidden=true;$('login-panel').hidden=false;$('logout').hidden=true;for(const id of ['counts','conditions','steps','search-stats','participants','detail-content'])$(id).replaceChildren();$('coding-notes').value='';$('participant-id').value='';$('detail-title').textContent='참가자 상세';$('coding-status').textContent='';$('detail-snapshot').textContent='';$('detail-panel').hidden=true;}
+ function expireAt(at){clearTimeout(expiryTimer);expiryTimer=setTimeout(()=>{clearSession();$('notice').textContent='관리자 세션이 만료되었습니다. 다시 로그인해 주세요.';},Math.max(0,Date.parse(at)-Date.now()));}
+ async function api(path,body,raw=false){const generation=sessionGeneration;const response=await fetch('/api/admin/'+path,{credentials:'same-origin',cache:'no-store',method:body===undefined?'GET':'POST',headers:body===undefined?{}:{'Content-Type':'application/json','X-Admin-Request':'1'},...(body===undefined?{}:{body:JSON.stringify(body)})});
+  if(!response.ok){let data;try{data=await response.json();}catch{}if(response.status===401||response.status===503&&authenticated)clearSession();throw Error(data?.error?.message||'관리자 요청에 실패했습니다.');}const data=raw?response:await response.json();if(generation!==sessionGeneration)throw Error('관리자 세션이 변경되었습니다. 다시 로그인해 주세요.');if(data.expires_at)expireAt(data.expires_at);return data;
+ }
+ async function work(action){if(busy)return;busy=true;locked();$('notice').textContent='';try{await action();}catch(error){$('notice').textContent=error.message;}finally{busy=false;locked();}}
+ function table(parent,headers,rows){parent.replaceChildren();const t=node('table',undefined,parent),head=node('tr',undefined,node('thead',undefined,t));for(const h of headers)node('th',h,head).scope='col';const body=node('tbody',undefined,t);if(!rows.length){const td=node('td','해당 DB 기록이 없습니다.',node('tr',undefined,body));td.colSpan=headers.length;}
+  for(const row of rows){const tr=node('tr',undefined,body);for(const x of row){const td=node('td',undefined,tr);if(x instanceof Node)td.append(x);else td.textContent=value(x);}}
+ }
+ function cards(id,entries){$(id).replaceChildren();for(const[label,n]of entries){const card=node('div',undefined,$(id));card.className='card';node('span',label,card);node('strong',n,card);}}
+ async function list(){const data=await api(`participants?limit=50&offset=${offset}`);total=data.total;
+  table($('participants'),['참가자 ID','조건','진행 상태','현재 단계','검색/출처 클릭','조회'],data.participants.map(p=>{const b=node('button','상세');b.type='button';b.dataset.participant=p.participant_id;b.addEventListener('click',()=>work(()=>showDetail(p.participant_id)));return[p.participant_id,p.condition_code,p.progress_status,steps[p.current_step],`${p.search_attempt_count} / ${p.source_click_count}`,b];}));
+  $('page-status').textContent=total?`${offset+1}–${Math.min(offset+50,total)} / ${total}명`:'등록 참가자 0명';
+ }
+ async function refresh(){const s=await api('overview');$('environment').textContent=s.environment==='test'?'TEST · 개발 테스트 데이터':'RESEARCH · 실제 연구 데이터';$('environment').className='badge '+s.environment;$('snapshot').textContent='통계 조회 시각: '+s.snapshot_at;
+  cards('counts',[['전체 참가자',s.total],['완료',s.completed],['진행 중·미완료',s.in_progress],['명시적 중단',s.withdrawn],['적격성 종료',s.ineligible],['기존 비동의 기록',s.declined]]);
+  table($('conditions'),['조건','배정','완료','완료율','실제 지연 평균','지연 표본(답변)','검색 사용자/시도','출처 사용자/클릭'],s.conditions.map(c=>[`${c.condition} · ${c.target_seconds}초`,c.assigned,c.completed,c.completion_rate===null?'—':(c.completion_rate*100).toFixed(1)+'%',mean(c.actual_delay_mean_ms),c.actual_delay_observations,`${c.search_users} / ${c.search_attempts}`,`${c.source_users} / ${c.source_clicks}`]));
+  table($('steps'),['단계','도달','완료','명시적 종료·미완료','진행 중·미완료'],s.steps.map(r=>[steps[r.step],r.reached,r.completed,r.ended_incomplete,r.active_incomplete]));
+  cards('search-stats',[['검색 시도',s.search.attempts],['제공자 API 요청',s.search.provider_requests],['검색 성공',s.search.successful],['검색 실패',s.search.failed],['출처 클릭',s.search.source_clicks],['외부 호스트 클릭',s.search.external_source_clicks],['복귀 기록',s.search.source_returns]]);await list();
+ }
+ async function showDetail(id){const d=await api('participants/'+encodeURIComponent(id));current=d;$('detail-panel').hidden=false;$('detail-title').textContent='참가자 '+id;$('detail-snapshot').textContent=`${d.environment} · 상세 조회 시각: ${d.snapshot_at}`;$('detail-content').replaceChildren();
+  for(const[label,data]of [['진행 상태·분석 변수',d.participant],['단계별 시각',d.participant_steps],['사전 설문',d.survey_responses.filter(r=>r.phase==='pre')],['대화 기록',d.chat_messages.sort((a,b)=>Number(a.sequence_number)-Number(b.sequence_number))],['응답 지연 원자료',d.chat_timings],['검색 기록',d.search_events],['출처 접근·복귀',d.source_events],['최종 답변',d.final_decisions],['사후 설문',d.survey_responses.filter(r=>r.phase==='post')],['행동 이벤트',d.research_events],['연구자 코딩 이력',d.final_decision_codings]]){const section=node('details',undefined,$('detail-content'));node('summary',`${label}${Array.isArray(data)?' · '+data.length+'건':''}`,section);node('pre',JSON.stringify(data,null,2),section);}
+  $('coding-code').value=d.participant.misinformation_acceptance||'not_assessed';$('coding-notes').value=d.participant.adjudication_notes||'';$('coding-status').textContent=d.participant.selected_product?'현재 코딩 버전: '+d.participant.coding_revision:'최종 답변 미제출: 코딩할 수 없습니다.';
+ }
+ $('login-form').addEventListener('submit',event=>{event.preventDefault();const username=$('username').value,password=$('password').value;$('password').value='';work(async()=>{await api('login',{username,password});authenticated=true;$('username').value='';$('login-panel').hidden=true;$('dashboard').hidden=false;$('logout').hidden=false;await refresh();});});
+ $('logout').addEventListener('click',()=>work(async()=>{await api('logout',{});clearSession();}));
+ $('refresh').addEventListener('click',()=>work(refresh));
+ $('lookup-form').addEventListener('submit',event=>{event.preventDefault();work(()=>showDetail($('participant-id').value.trim()));});
+ $('previous').addEventListener('click',()=>work(async()=>{offset=Math.max(0,offset-50);await list();}));$('next').addEventListener('click',()=>work(async()=>{offset+=50;await list();}));
+ $('coding-form').addEventListener('submit',event=>{event.preventDefault();if(!current||!current.participant.selected_product)return;const id=current.participant.participant_id;const body={request_id:crypto.randomUUID(),code:$('coding-code').value,notes:$('coding-notes').value,revision:current.participant.coding_revision};work(async()=>{await api(`participants/${id}/coding`,body);await showDetail(id);$('coding-status').textContent='코딩을 저장했습니다.';});});
+ document.querySelectorAll('[data-export]').forEach(button=>button.addEventListener('click',()=>work(async()=>{const kind=button.dataset.export,response=await api('exports/'+kind,undefined,true),blob=await response.blob(),url=URL.createObjectURL(blob),a=node('a');a.href=url;a.download=response.headers.get('Content-Disposition')?.match(/filename="([^"]+)"/)?.[1]||kind+'.csv';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);$('notice').textContent='다운로드 파일을 생성했습니다.';})));
+ // Credentials and dataset are never persisted to browser storage.
+ work(async()=>{try{await api('session');authenticated=true;$('login-panel').hidden=true;$('dashboard').hidden=false;$('logout').hidden=false;await refresh();}catch(error){if(authenticated)throw error;$('notice').textContent=error.message;}});
+})();

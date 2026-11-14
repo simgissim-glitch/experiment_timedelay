@@ -1,0 +1,19 @@
+{
+  "generated_at": "2026-11-14T20:04:02.781Z",
+  "environment": "isolated PGlite; development-only; not research data",
+  "n": 90,
+  "groups": [
+    {
+      "condition_code": "B",
+      "n": 40
+    },
+    {
+      "condition_code": "C",
+      "n": 29
+    },
+    {
+      "condition_code": "A",
+      "n": 21
+    }
+  ]
+}

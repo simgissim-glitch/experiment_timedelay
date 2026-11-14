@@ -1,0 +1,10 @@
+{
+  "version": "TODO",
+  "environment": "research",
+  "approved": false,
+  "question": "TODO: 연구자가 확정한 동일한 최초 질문",
+  "answer": "TODO: 연구자가 확정한 핵심 사실 오류 하나를 포함하는 동일한 최초 답변",
+  "errorKey": "TODO",
+  "expectedTruth": "TODO: 검증된 사실 및 정정 판정 기준",
+  "todo": "실제 연구 자극물·버전·검증 근거와 연구자 승인이 확정될 때까지 사용을 차단한다. 실제 제품 사양이나 출처를 임의로 입력하지 않는다."
+}
