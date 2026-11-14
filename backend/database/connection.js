@@ -11,6 +11,7 @@ function createPool(config) {
   }
   return new Pool({
     connectionString: config.connectionString,
+    enableChannelBinding: config.enableChannelBinding === true,
     ssl: config.sslMode === 'disable' ? false : { rejectUnauthorized: true, ...(ca ? { ca } : {}) },
     max: config.serverless ? 1 : 3, connectionTimeoutMillis: 5000, idleTimeoutMillis: 10000,
     query_timeout: 5000, statement_timeout: 5000,

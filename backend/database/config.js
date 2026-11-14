@@ -18,19 +18,25 @@ function parseDatabaseConfig(values) {
     throw new DatabaseConfigError('DB_CONFIG_INVALID', '유효한 PostgreSQL 연결 문자열이 필요합니다.');
   }
   // node-postgres에서 URL SSL 옵션이 별도 ssl 객체를 덮어쓰지 않게 한다.
-  if ([...url.searchParams.keys()].some((key) => !['sslmode'].includes(key)) ||
-      (url.searchParams.has('sslmode') && url.searchParams.get('sslmode') !== 'verify-full')) {
-    throw new DatabaseConfigError('DB_CONFIG_INVALID', 'URL 쿼리는 sslmode=verify-full만 허용합니다. SSL 인증서는 DB_SSL_CA_FILE로 설정하세요.');
+  if ([...url.searchParams.keys()].some((key) => !['sslmode', 'channel_binding'].includes(key)) ||
+      ['sslmode', 'channel_binding'].some(key => url.searchParams.getAll(key).length > 1) ||
+      (url.searchParams.has('sslmode') && !['require', 'verify-full'].includes(url.searchParams.get('sslmode'))) ||
+      (url.searchParams.has('channel_binding') && url.searchParams.get('channel_binding') !== 'require')) {
+    throw new DatabaseConfigError('DB_CONFIG_INVALID', 'URL 옵션은 sslmode=require 또는 verify-full, channel_binding=require만 허용합니다.');
   }
   const sslMode = values.DB_SSL_MODE || 'verify-full';
   const local = ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname);
   if (!['verify-full', 'disable'].includes(sslMode) || (sslMode === 'disable' && (environment !== 'test' || !local))) {
     throw new DatabaseConfigError('DB_CONFIG_INVALID', '비암호화 연결은 로컬 테스트 DB에서만 허용합니다.');
   }
+  const enableChannelBinding = url.searchParams.get('channel_binding') === 'require';
+  if ((url.searchParams.has('sslmode') || enableChannelBinding) && sslMode === 'disable') {
+    throw new DatabaseConfigError('DB_CONFIG_INVALID', 'URL TLS options conflict with disabled SSL');
+  }
   url.search = '';
   return {
     environment, connectionString: url.toString(), sslMode,
-    serverless:values.RUNTIME_MODE==='serverless',
+    serverless:values.RUNTIME_MODE==='serverless', enableChannelBinding,
     caFile: values.DB_SSL_CA_FILE || null,
   };
 }
