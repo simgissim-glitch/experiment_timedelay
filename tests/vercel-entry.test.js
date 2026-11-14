@@ -20,7 +20,7 @@ test('Vercel 모듈 import는 포트를 열거나 환경변수·DB 연결을 요
  assert.equal(result.status,0,result.stderr);assert.match(result.stdout,/ENTRY_OK/);
 });
 test('활성 Vercel 설정은 Express를 사용하고 잘못된 functions.app.js 패턴을 만들지 않는다',()=>{
- const config=require('../vercel.json');assert.equal(config.framework,'express');assert.equal(config.functions,undefined);
+ const config=require('../vercel.json');assert.equal(config.framework,null);assert.equal(config.functions['api/index.js'].maxDuration,120);assert.equal(config.functions['app.js'],undefined);assert.equal(require('../api/index'),require('../app'));assert.deepEqual(config.rewrites,[{source:'/(.*)',destination:'/api/index'}]);
  assert.equal(config.buildCommand,'');assert.equal(config.outputDirectory,null);
 });
 test('CDN 디렉터리 인덱스에 의존하지 않고 홈·관리자 HTML을 직접 응답한다',async()=>{

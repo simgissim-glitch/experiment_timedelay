@@ -28,3 +28,5 @@
 
 
 Build-log follow-up: removed the invalid functions.app.js pattern from both active configuration and the deployment template. API, deployment, and entrypoint regression tests: 18 passed. Verify function duration separately in Vercel project settings.
+
+Deployment follow-up: 7e4b59d built successfully and served static HTML, but API paths returned platform NOT_FOUND. Use an explicit api/index.js Serverless Function and catch-all rewrite rather than relying on Express framework discovery. The function now has a valid api-directory pattern and 120-second budget.

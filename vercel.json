@@ -1,8 +1,15 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "express",
+  "framework": null,
   "buildCommand": "",
   "outputDirectory": null,
+  "functions": {
+    "api/index.js": {
+      "maxDuration": 120,
+      "includeFiles": "{public/**,backend/stimuli/*.json,backend/study/*.json}"
+    }
+  },
+  "rewrites": [{ "source": "/(.*)", "destination": "/api/index" }],
   "headers": [
     {
       "source": "/(.*)",

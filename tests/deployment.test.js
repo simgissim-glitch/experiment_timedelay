@@ -44,5 +44,5 @@ test('작업 트리 검사기는 키·브라우저 비밀값을 탐지하되 비
 });
 test('Vercel template uses Express discovery and retains security headers',async()=>{
  const config=JSON.parse(await fs.readFile(path.join(__dirname,'../deploy/vercel.template.json'),'utf8')),ignore=await fs.readFile(path.join(__dirname,'../.vercelignore'),'utf8');
- assert.equal(config.framework,'express');assert.equal(config.functions,undefined);assert.ok(config.headers.some(r=>r.source==='/admin/(.*)'&&r.headers.some(h=>h.key==='Cache-Control'&&h.value==='no-store')));assert.match(ignore,/\.env/);assert.match(ignore,/secrets\//);
+ assert.equal(config.framework,null);assert.equal(config.functions['api/index.js'].maxDuration,120);assert.ok(config.headers.some(r=>r.source==='/admin/(.*)'&&r.headers.some(h=>h.key==='Cache-Control'&&h.value==='no-store')));assert.match(ignore,/\.env/);assert.match(ignore,/secrets\//);
 });
