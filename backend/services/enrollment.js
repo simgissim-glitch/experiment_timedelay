@@ -18,6 +18,16 @@ class EnrollmentRepository {
       return await this.pool.query(sql, args);
     } catch (error) {
       if (error instanceof ApiError) throw error;
+      if (['42P01', '3F000', '42883', '42703'].includes(error.code)) {
+        throw new ApiError(503, 'DB_SCHEMA_NOT_APPLIED', '필요한 데이터베이스 테이블 또는 함수가 준비되지 않았습니다.');
+      }
+      if (error.code === '28P01') throw new ApiError(503, 'DB_AUTH_FAILED', '데이터베이스 인증 설정을 확인해 주세요.');
+      if (['CERT_HAS_EXPIRED', 'DEPTH_ZERO_SELF_SIGNED_CERT', 'SELF_SIGNED_CERT_IN_CHAIN', 'UNABLE_TO_VERIFY_LEAF_SIGNATURE', 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY', 'ERR_TLS_CERT_ALTNAME_INVALID'].includes(error.code)) {
+        throw new ApiError(503, 'DB_TLS_FAILED', '데이터베이스 TLS 인증서를 확인해 주세요.');
+      }
+      if (['ENOTFOUND', 'ECONNREFUSED', 'ETIMEDOUT', 'ECONNRESET'].includes(error.code)) {
+        throw new ApiError(503, 'DB_CONNECTION_FAILED', '데이터베이스 네트워크 연결을 확인해 주세요.');
+      }
       if (error.code === '28000') throw new ApiError(401, 'SESSION_INVALID', '참여 세션이 유효하지 않습니다.');
       if (error.code === '42501') throw new ApiError(403, 'STEP_NOT_ALLOWED', '필요한 참여 절차를 먼저 완료해 주세요.');
       if (error.code === '22023') throw new ApiError(400, 'VALIDATION_ERROR', '입력 항목과 응답 값을 확인해 주세요.');
