@@ -42,7 +42,7 @@ test('작업 트리 검사기는 키·브라우저 비밀값을 탐지하되 비
   const result=scan({directory:dir,secretValues:[secret]});assert.ok(result.findings.length);assert.ok(result.findings.every(f=>f.file==='public/app.js'));assert.ok(!JSON.stringify(result).includes(secret));
  }finally{assert.equal(path.dirname(path.resolve(dir)),path.resolve(os.tmpdir()));assert.ok(path.basename(dir).startsWith('experiment-security-'));await fs.rm(dir,{recursive:true,force:true});}
 });
-test('배포 템플릿은 120초 시간 예산과 관리자 CDN 보안 헤더를 지정하며 비밀 파일은 제외한다',async()=>{
+test('Vercel template uses Express discovery and retains security headers',async()=>{
  const config=JSON.parse(await fs.readFile(path.join(__dirname,'../deploy/vercel.template.json'),'utf8')),ignore=await fs.readFile(path.join(__dirname,'../.vercelignore'),'utf8');
- assert.equal(config.functions['app.js'].maxDuration,120);assert.ok(config.headers.some(r=>r.source==='/admin/(.*)'&&r.headers.some(h=>h.key==='Cache-Control'&&h.value==='no-store')));assert.match(ignore,/\.env/);assert.match(ignore,/secrets\//);
+ assert.equal(config.framework,'express');assert.equal(config.functions,undefined);assert.ok(config.headers.some(r=>r.source==='/admin/(.*)'&&r.headers.some(h=>h.key==='Cache-Control'&&h.value==='no-store')));assert.match(ignore,/\.env/);assert.match(ignore,/secrets\//);
 });

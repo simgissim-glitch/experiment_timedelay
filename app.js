@@ -40,10 +40,16 @@ function createApp({ getEnrollment = createEnrollmentProvider(), getWorkflow, ge
     return workflow;
   });
   app.use('/api', apiRouter);
+  // Explicit file responses also work when Vercel bypasses express.static().
+  // Literal require.resolve calls make these HTML assets visible to file tracing.
+  const indexPage = require.resolve('./public/index.html');
+  const adminPage = require.resolve('./public/admin/index.html');
+  app.get('/', (_req, res) => res.sendFile(indexPage));
+  app.get(['/admin', '/admin/'], (_req, res) => res.sendFile(adminPage));
   app.get('/experiment/:step', sessionContext, async (req, res) => {
     if (!STEPS.includes(req.params.step)) throw new ApiError(404, 'NOT_FOUND', '요청한 단계를 찾을 수 없습니다.');
     await app.locals.getWorkflow().access(req.sessionToken, req.params.step);
-    res.sendFile(path.join(__dirname, 'public/index.html'));
+    res.sendFile(indexPage);
   });
   app.use(express.static(path.join(__dirname, 'public')));
   app.use((_req, _res, next) => next(new ApiError(404, 'NOT_FOUND', '요청한 경로를 찾을 수 없습니다.')));

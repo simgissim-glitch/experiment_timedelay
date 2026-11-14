@@ -10,7 +10,8 @@
 
 - app.js가 Express를 직접 import하고, 기존 createApp 구현 및 기본 Express 인스턴스를 export합니다.
 - server.js는 로컬 포트 실행과 createApp 재노출만 담당합니다. 기존 테스트 import 경로를 보존합니다.
-- 루트 vercel.json에 framework=express, app.js 실행시간 120초, 정적/설정 파일 포함과 관리자 CDN 보안 헤더를 지정했습니다. DB/키/연구자 승인이나 관리자 서버리스 제한은 완화하지 않았습니다.
+- 루트 vercel.json에 framework=express와 관리자 CDN 보안 헤더를 지정했습니다. 처음 추가한 functions.app.js는 실제 빌드에서 'api 디렉터리 함수와 일치하지 않음'으로 거절되어 제거했습니다. 실행시간은 Vercel Functions 설정에서 120초 이상인지 확인하며 잘못된 functions 패턴을 다시 추가하지 않습니다.
+- 홈페이지와 관리자 HTML은 명시적 GET/sendFile로 응답하며 require.resolve의 정적 참조로 번들에 포함합니다. express.static이나 CDN 디렉터리 인덱스에만 의존하지 않습니다. DB/키/연구자 승인이나 관리자 서버리스 제한은 완화하지 않았습니다.
 - 실제 탐지 규칙을 적용해 선택되는 파일이 app.js이고 함수 export인지 검사하는 회귀 테스트를 추가했습니다. VERCEL=1/DB·AI 미설정 환경에서 import가 포트를 열거나 DB에 연결하지 않는지도 검사합니다.
 
 배포 후 확인:
@@ -24,3 +25,6 @@
 5. 계속 FUNCTION_INVOCATION_FAILED라면 Logs에서 최신 배포의 첫 스택/오류를 확인합니다. 계정 전용 로그에 접근하지 못한 상태에서는 모든 배포 원인이 해결되었다고 단정할 수 없습니다.
 
 이 변경은 기존 .env·연구 데이터·조건 배정·설문 문구를 수정하지 않습니다. 서버리스 관리자 세션, 실제 연구용 적격성/자극물·동의서 승인 등 기존 제한은 유지합니다.
+
+
+Build-log follow-up: removed the invalid functions.app.js pattern from both active configuration and the deployment template. API, deployment, and entrypoint regression tests: 18 passed. Verify function duration separately in Vercel project settings.
